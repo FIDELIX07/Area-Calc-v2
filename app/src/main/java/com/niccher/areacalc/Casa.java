@@ -24,13 +24,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.niccher.areacalc.frags.Frag_About;
 import com.niccher.areacalc.frags.Frag_Home;
 import com.niccher.areacalc.frags.Frag_Profile;
@@ -52,15 +45,10 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
     private String[] screenTitles;
     private Drawable[] screenIcons;
 
-    FirebaseAuth mAuth;
-    FirebaseUser userf;
-    DatabaseReference dref1;
-
     CircleImageView usr_prof;
     TextView usr_handle,usr_email;
 
     private SlidingRootNav slidingRootNav;
-
 
     private static final int POS_DASHBOARD = 0;
     private static final int POS_View_Area = 1;
@@ -80,9 +68,6 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        mAuth= FirebaseAuth.getInstance();
-        userf=mAuth.getCurrentUser();
 
         LoadData();
 
@@ -125,29 +110,19 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
     @Override
     protected void onStart() {
         super.onStart();
-        GetState();
+
         LoadUsa();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        GetState();
+
         LoadUsa();
     }
 
-    private void GetState(){
-        FirebaseUser fuse=mAuth.getCurrentUser();
-        if (fuse!=null){
-            //
-        }else {
-            startActivity(new Intent(Casa.this,UserLogin.class));
-            finish();
-        }
-    }
-
     public void LoadData(){
-        SharedPreferences sharedPreferences = getSharedPreferences("Area_Calc_Prefs", MODE_PRIVATE);
+        /*SharedPreferences sharedPreferences = getSharedPreferences("Nxck_Prefs", MODE_PRIVATE);
         String intro = sharedPreferences.getString("intro_slide","has_not");
         Log.e("LoadData", "intro_slide is set as " + intro);
 
@@ -157,40 +132,9 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
             startActivity(gog);
             finish();
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (intro =="has_seen") {}
+        } else if (intro =="has_seen") {
 
-        try {
-            dref1= FirebaseDatabase.getInstance().getReference("Area_Calc").child(userf.getUid());
-            dref1.keepSynced(true);
-
-            dref1.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String gUsername,gEmail,gimgProfile;
-
-                    gUsername= (String) dataSnapshot.child("gUsername").getValue();
-                    gEmail= (String) dataSnapshot.child("gEmail").getValue();
-                    gimgProfile= (String) dataSnapshot.child("gProfilethumb").getValue();
-
-                    usr_email.setText(gEmail);
-                    usr_handle.setText(gUsername);
-
-                    try {
-                        Picasso.get().load(gimgProfile).into(usr_prof);
-
-                    }catch (Exception ex){
-                        Picasso.get().load(R.drawable.ic_defuser).into(usr_prof);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }catch (Exception ex){
-            Log.e("Casa ", "LoadUsa Data ********************: \n" +ex.getMessage());
-        }
+        }*/
     }
 
 
@@ -250,8 +194,7 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
             }
         }
         if (position == POS_LOG) {
-            mAuth.signOut();
-            GetState();
+            Toast.makeText(this, "Log Out Logic", Toast.LENGTH_SHORT).show();
         }
         if (position == POS_EXIT) {
             Intent intt=new Intent(Intent.ACTION_MAIN);
@@ -312,4 +255,31 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
         return ContextCompat.getColor(this, res);
     }
 
+    /*@Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.action_cancel) {
+            Toast.makeText(this, "Cancel Under Active Development", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        if (id == R.id.action_save) {
+            Toast.makeText(this, "Save Pressed", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        if (id == R.id.action_layers) {
+            Toast.makeText(this, "Layer Pressed", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.mini, menu);
+        return true;
+    }*/
 }
