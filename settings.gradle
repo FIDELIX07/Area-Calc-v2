@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='Area Calc'
+rootProject.name='Home'
