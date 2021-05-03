@@ -14,4 +14,9 @@
     <color name="colorAppDivider">#FF4081</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colortWhite">#CCCCCC</color>
+
+    <color name="price">#490000</color>
+
+    <color name="orange">#ff7033</color>
+    <color name="gray">#BEBEBE</color>
 </resources>
