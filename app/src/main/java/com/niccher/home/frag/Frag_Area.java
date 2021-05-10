@@ -7,6 +7,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -365,4 +368,37 @@ public class Frag_Area extends Fragment implements OnMapReadyCallback {
             Log.e("SaveList", "SaveList Error : "+s.getMessage());
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.action_cancel) {
+            Toast.makeText(getActivity(), "Cancel Under Active Development", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        if (id == R.id.action_save) {
+
+            if (locList.isEmpty() && loc_area.isEmpty()){
+                Log.e("SaveList", "Type: locList.isEmpty() && loc_area.isEmpty()");
+                Toast.makeText(getActivity(), "Ensure you have placed some markers before saving", Toast.LENGTH_SHORT).show();
+            }else {
+                SaveList(loc_area,"Area");
+            }
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        MenuInflater menuInflater = getActivity().getMenuInflater();
+        menuInflater.inflate(R.menu.mini, menu);
+        //return true;
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
 }

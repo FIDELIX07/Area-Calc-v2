@@ -44,6 +44,8 @@ import com.google.maps.android.SphericalUtil;
 import com.niccher.home.R;
 import com.niccher.home.Utils.CalcArea;
 import com.niccher.home.Utils.CalcDistance;
+import com.niccher.home.mod.Mod_Area;
+import com.niccher.home.mod.Mod_Perimeter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -471,13 +473,13 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
         try {
             uploadId= dref.push().getKey();
             if (area){
-                /*Mod_Area upload = new Mod_Area(uploadId,cdat+" "+ctim,llong,String.valueOf(selected.size()),store_area, store_perimeter );
-                dref.child(type).child(userf.getUid()).child(uploadId).setValue(upload);*/
+                Mod_Area upload = new Mod_Area(uploadId,cdat+" "+ctim,llong,String.valueOf(selected.size()),store_area, store_perimeter );
+                dref.child(type).child(userf.getUid()).child(uploadId).setValue(upload);
                 Toast.makeText(getActivity(), "Area Selection saved", Toast.LENGTH_SHORT).show();
             }
             if (length){
-                /*Mod_Perimeter upload = new Mod_Perimeter(uploadId,cdat+" "+ctim,llong,String.valueOf(selected.size()), store_perimeter );
-                dref.child(type).child(userf.getUid()).child(uploadId).setValue(upload);*/
+                Mod_Perimeter upload = new Mod_Perimeter(uploadId,cdat+" "+ctim,llong,String.valueOf(selected.size()), store_perimeter );
+                dref.child(type).child(userf.getUid()).child(uploadId).setValue(upload);
                 Toast.makeText(getActivity(), "Length Selection saved", Toast.LENGTH_SHORT).show();
             }
 
@@ -485,5 +487,37 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
             Toast.makeText(getActivity(), "Unable to save your selection", Toast.LENGTH_LONG).show();
             Log.e("SaveList", "SaveList Error : "+s.getMessage());
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.action_cancel) {
+            Toast.makeText(getActivity(), "Cancel Under Active Development", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        if (id == R.id.action_save) {
+
+            if (locList.isEmpty() && loc_area.isEmpty()){
+                Log.e("SaveList", "Type: locList.isEmpty() && loc_area.isEmpty()");
+                Toast.makeText(getActivity(), "Ensure you have placed some markers before saving", Toast.LENGTH_SHORT).show();
+            }else {
+                if (locList.size() ==0){
+                    SaveList(loc_area,"Area");
+                }else {
+                    SaveList(locList,"Length");
+                }
+            }
+
+            return true;
+        }
+
+        if (id == R.id.action_layers) {
+            Toast.makeText(getActivity(), "Layer Pressed", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

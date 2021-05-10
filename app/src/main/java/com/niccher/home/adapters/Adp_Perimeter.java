@@ -66,7 +66,7 @@ public class Adp_Perimeter extends RecyclerView.Adapter<Adp_Perimeter.ViewHolder
                 args.putString("Object_points",mLinks.get(position).getgPoints());
                 args.putString("Object_perimeter",mLinks.get(position).getgPerimeter());
                 myFragment.setArguments(args);
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, myFragment).addToBackStack(null).commit();
+                //activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, myFragment).addToBackStack(null).commit();
             }
         });
         

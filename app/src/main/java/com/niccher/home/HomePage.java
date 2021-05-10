@@ -34,7 +34,7 @@ public class HomePage extends AppCompatActivity {
     }
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //return super.onCreateOptionsMenu(menu);
         MenuInflater menuInflater = this.getMenuInflater();
@@ -61,6 +61,6 @@ public class HomePage extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
 }

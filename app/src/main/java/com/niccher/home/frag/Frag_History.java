@@ -1,5 +1,6 @@
 package com.niccher.home.frag;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.niccher.home.R;
+import com.niccher.home.activities.History_List_Polygon;
+import com.niccher.home.activities.History_List_Polyline;
 
 public class Frag_History extends Fragment {
 
@@ -33,11 +36,13 @@ public class Frag_History extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 if (mobileArray[position] =="Area History"){
-                    Toast.makeText(getActivity(), "Area History", Toast.LENGTH_SHORT).show();
+                    Intent viw = new Intent(getActivity(), History_List_Polygon.class);
+                    startActivity(viw);
                 }
 
                 if (mobileArray[position] =="Perimeter History"){
-                    Toast.makeText(getActivity(), "Perimeter History", Toast.LENGTH_SHORT).show();
+                    Intent viw = new Intent(getActivity(), History_List_Polyline.class);
+                    startActivity(viw);
                 }
             }
         });

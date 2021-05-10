@@ -67,7 +67,7 @@ public class Adp_Area extends RecyclerView.Adapter<Adp_Area.ViewHolder> {
                 args.putString("Object_perimeter",mLinks.get(position).getgPerimeter());
                 args.putString("Object_area",mLinks.get(position).getgArea());
                 myFragment.setArguments(args);
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, myFragment).addToBackStack(null).commit();
+                //activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, myFragment).addToBackStack(null).commit();
             }
         });
     }
