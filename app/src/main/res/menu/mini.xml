@@ -18,6 +18,34 @@
         android:id="@+id/action_layers"
         android:title="Map"
         android:visible="true"
-        app:showAsAction="never"/>
+        app:showAsAction="never">
+
+        <menu>
+            <item
+                android:id="@+id/action_normal"
+                android:visible="true"
+                android:title="Normal"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_hybrid"
+                android:visible="true"
+                android:title="Hybrid"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_satelite"
+                android:visible="true"
+                android:title="Satelite"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_terrain"
+                android:visible="true"
+                android:title="Terrain"
+                app:showAsAction="never"/>
+        </menu>
+
+    </item>
 
 </menu>

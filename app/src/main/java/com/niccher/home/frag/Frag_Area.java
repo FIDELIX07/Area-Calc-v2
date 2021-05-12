@@ -390,6 +390,26 @@ public class Frag_Area extends Fragment implements OnMapReadyCallback {
             return true;
         }
 
+        if (id == R.id.action_satelite) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            return true;
+        }
+
+        if (id == R.id.action_terrain) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+            return true;
+        }
+
+        if (id == R.id.action_normal) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            return true;
+        }
+
+        if (id == R.id.action_hybrid) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

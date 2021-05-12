@@ -128,9 +128,6 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
 
         mMapView.getMapAsync(this::onMapReady);
 
-        Animation anim_show = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_show);
-        Animation anim_hide = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_hide);
-
         txt_peri.setText("Perimeter");
 
         fab_ex.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +144,8 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
         });
 
         length = true;
+
+        LocateMe();
 
         return fraghome;
     }
@@ -190,7 +189,6 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
-                            //Log.e("Target", "Location Got ");
                             Location currloc = (Location) task.getResult();
 
                             try {
@@ -213,6 +211,15 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
 
     private void movCamera(LatLng latlong, float zoom) {
         gMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, zoom));
+        MarkerOptions my_pos = new MarkerOptions();
+        my_pos.position(latlong);
+        gMaps.addPolyline((new PolylineOptions()).addAll(locList )
+                .width(5)
+                .color(Color.GREEN)
+                .geodesic(false));
+
+        gMaps.animateCamera(CameraUpdateFactory.newLatLng(latlong));
+        gMaps.addMarker(my_pos);
     }
 
     private void CheckPermissions() {
@@ -231,6 +238,8 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
             ActivityCompat.requestPermissions(getActivity(), pe, reqcod);
         }
     }
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -365,6 +374,26 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
                 }
             }
 
+            return true;
+        }
+
+        if (id == R.id.action_satelite) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            return true;
+        }
+
+        if (id == R.id.action_terrain) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+            return true;
+        }
+
+        if (id == R.id.action_normal) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            return true;
+        }
+
+        if (id == R.id.action_hybrid) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_HYBRID);
             return true;
         }
 

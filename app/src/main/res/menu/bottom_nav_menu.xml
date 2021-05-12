@@ -18,8 +18,8 @@
 
     <item
         android:id="@+id/navigation_history"
-        android:icon="@drawable/ic_history"
-        android:title="History" />
+        android:icon="@drawable/ic_location"
+        android:title="Trace" />
 
     <item
         android:id="@+id/navigation_info"

@@ -33,34 +33,4 @@ public class HomePage extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
     }
 
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //return super.onCreateOptionsMenu(menu);
-        MenuInflater menuInflater = this.getMenuInflater();
-        menuInflater.inflate(R.menu.mini, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        int id = item.getItemId();
-        if (id == R.id.action_cancel) {
-            Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        if (id == R.id.action_save) {
-            Toast.makeText(this, "Layer Saved", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        if (id == R.id.action_layers) {
-            Toast.makeText(this, "Layer Pressed", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
-
 }

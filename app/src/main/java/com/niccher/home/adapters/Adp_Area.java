@@ -2,6 +2,7 @@ package com.niccher.home.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.niccher.home.R;
+import com.niccher.home.activities.History_Render;
 import com.niccher.home.frag.history.Frag_History_Render;
 import com.niccher.home.mod.Mod_Area;
 
@@ -58,16 +60,14 @@ public class Adp_Area extends RecyclerView.Adapter<Adp_Area.ViewHolder> {
             @Override
             public void onClick(View v) {
                 AppCompatActivity activity = (AppCompatActivity) v.getContext();
-                Fragment myFragment = new Frag_History_Render();
-                Bundle args= new Bundle();
-                args.putString("Object_time",mLinks.get(position).getgTime());
-                args.putString("Object_uid",mLinks.get(position).getgUid());
-                args.putString("Object_latlong",mLinks.get(position).getgLatlng());
-                args.putString("Object_points",mLinks.get(position).getgPoints());
-                args.putString("Object_perimeter",mLinks.get(position).getgPerimeter());
-                args.putString("Object_area",mLinks.get(position).getgArea());
-                myFragment.setArguments(args);
-                //activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, myFragment).addToBackStack(null).commit();
+                Intent render = new Intent(mContext, History_Render.class);
+                render.putExtra("Object_time",mLinks.get(position).getgTime());
+                render.putExtra("Object_uid",mLinks.get(position).getgUid());
+                render.putExtra("Object_latlong",mLinks.get(position).getgLatlng());
+                render.putExtra("Object_points",mLinks.get(position).getgPoints());
+                render.putExtra("Object_perimeter",mLinks.get(position).getgPerimeter());
+                render.putExtra("Object_area",mLinks.get(position).getgArea());
+                v.getContext().startActivity(render);
             }
         });
     }

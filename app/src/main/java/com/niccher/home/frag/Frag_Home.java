@@ -7,6 +7,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -514,10 +516,34 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
             return true;
         }
 
-        if (id == R.id.action_layers) {
-            Toast.makeText(getActivity(), "Layer Pressed", Toast.LENGTH_SHORT).show();
+        if (id == R.id.action_satelite) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
             return true;
         }
+
+        if (id == R.id.action_terrain) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+            return true;
+        }
+
+        if (id == R.id.action_normal) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            return true;
+        }
+
+        if (id == R.id.action_hybrid) {
+            gMaps.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        MenuInflater menuInflater = getActivity().getMenuInflater();
+        menuInflater.inflate(R.menu.mini, menu);
+        //return true;
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }
