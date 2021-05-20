@@ -25,9 +25,9 @@
 
     <fragment
         android:id="@+id/navigation_history"
-        android:name="com.niccher.home.frag.Frag_History"
+        android:name="com.niccher.home.frag.Frag_Trackme"
         android:label="Track"
-        tools:layout="@layout/frag_history" />
+        tools:layout="@layout/frag_trackme" />
 
     <fragment
         android:id="@+id/navigation_info"

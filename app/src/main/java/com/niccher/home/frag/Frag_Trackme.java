@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,11 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -32,8 +33,6 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,18 +41,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.maps.android.SphericalUtil;
 import com.niccher.home.R;
-import com.niccher.home.Utils.CalcArea;
 import com.niccher.home.Utils.CalcDistance;
-import com.niccher.home.mod.Mod_Perimeter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
-
-public class Frag_Length extends Fragment implements OnMapReadyCallback {
+public class Frag_Trackme extends Fragment implements OnMapReadyCallback {
 
     String locFINE = Manifest.permission.ACCESS_FINE_LOCATION;
     String locCOS = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -64,7 +59,7 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
 
     int count = 0, area_count = 0;
     double length_ = 0;
-    LatLng tapped,tapped1;
+    LatLng tapped;
     PolylineOptions polylineOptions;
 
     double prev,curent;
@@ -76,30 +71,18 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
     final int reqcod = 145;
     GoogleMap gMaps;
 
-    float zoomdef = 10f;
+    float zoomdef = 22f;
 
     FusedLocationProviderClient floc;
-
-    FloatingActionButton fab_ex;
-
-    TextView txt_peri;
-
-    String store_area, store_perimeter;
-
-    CalcDistance calcDistance;
 
     FirebaseAuth mAuth;
     FirebaseUser userf;
     DatabaseReference dref;
 
-    public Frag_Length() {
-        // Required empty public constructor
-    }
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-        View fraghome = inflater.inflate(R.layout.frag_length, container, false);
+        View solv= inflater.inflate(R.layout.frag_trackme, container, false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Track Me");
 
         mAuth = FirebaseAuth.getInstance();
         userf=mAuth.getCurrentUser();
@@ -108,13 +91,8 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
 
         CheckPermissions();
 
-        calcDistance = new CalcDistance();
 
-        mMapView = (MapView) fraghome.findViewById(R.id.mapView);
-
-        fab_ex = fraghome.findViewById(R.id.fab_remove_length);
-
-        txt_peri = fraghome.findViewById(R.id.loc_perimeter);
+        mMapView = (MapView) solv.findViewById(R.id.mapView);
 
         mMapView.onCreate(savedInstanceState);
 
@@ -128,26 +106,13 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
 
         mMapView.getMapAsync(this::onMapReady);
 
-        txt_peri.setText("Perimeter");
-
-        fab_ex.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                txt_peri.setText("Perimeter");
-                length_ = 0.0;
-                store_area =""; store_perimeter ="";
-                loc_area.clear();
-                locList.clear();
-                gMaps.clear();
-                clean = false;
-            }
-        });
-
         length = true;
 
-        LocateMe();
+        Toast.makeText(getActivity(), "For every 5 seconds, the app will be tracking you", Toast.LENGTH_SHORT).show();
 
-        return fraghome;
+        rePlay();
+
+        return solv;
     }
 
     @Override
@@ -193,6 +158,7 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
 
                             try {
                                 movCamera(new LatLng(currloc.getLatitude(), currloc.getLongitude()), zoomdef);
+                                locList.add(new LatLng(currloc.getLatitude(), currloc.getLongitude()));
                             }catch (Exception es){
                                 Toast.makeText(getActivity(), "Error\n"+es, Toast.LENGTH_SHORT).show();
                             }
@@ -211,6 +177,15 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
 
     private void movCamera(LatLng latlong, float zoom) {
         gMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, zoom));
+        MarkerOptions my_pos = new MarkerOptions();
+        my_pos.position(latlong);
+        gMaps.addPolyline((new PolylineOptions()).addAll(locList )
+                .width(5)
+                .color(Color.RED)
+                .geodesic(false));
+
+        gMaps.animateCamera(CameraUpdateFactory.newLatLng(latlong));
+        gMaps.addMarker(my_pos);
     }
 
     private void CheckPermissions() {
@@ -230,7 +205,27 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    private void rePlay(){
+        final Handler handler = new Handler();
+        Timer timer = new Timer();
+        TimerTask backtask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        try {
+                            Log.e("check","Check 111" );
+                            LocateMe();
+                        } catch (Exception e) {
+                            Log.e("check","Check 222" );
+                        }
+                    }
+                });
+            }
+        };
+        timer.schedule(backtask , 05, 5000);
 
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -247,100 +242,11 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
             gMaps.getUiSettings().setMyLocationButtonEnabled(true);
             LocateMe();
 
-            gMaps.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng latLng) {
-                    MarkerOptions markerOptions = new MarkerOptions();
 
-                    count = count + 1;
-                    area_count = area_count + 1;
-
-                    if (clean){
-                        store_area =""; store_perimeter ="";
-                        loc_area.clear();
-                        locList.clear();
-                        gMaps.clear();
-                        clean = false;
-                    }
-                    if (length){
-                        locList.add(latLng);
-                        int sizes = locList.size();
-
-                        if (state){
-                            store_area =""; store_perimeter ="";
-                            locList.clear();
-                            gMaps.clear();
-                            googleMap.clear();
-                            state = false;
-                        }
-
-                        if (locList.size() > 1){
-                            tapped = locList.get(locList.size()-2);
-                            tapped1 = locList.get(locList.size()-1);
-                            length_ = length_ + calcDistance.CalculateDistance(tapped, tapped1);
-                            String distance  = String.format("%.2f", length_);
-                            txt_peri.setText("Distance Approximation: "+distance+" Km");
-                            Log.e("Distance is ", "Currently as : " + length_);
-                            store_area ="NULLABLE";
-                            store_perimeter = distance;
-                        }
-
-                        markerOptions.position(latLng);
-                        googleMap.addPolyline((new PolylineOptions()).addAll(locList )
-                                .width(5)
-                                .color(Color.RED)
-                                .geodesic(false));
-
-                        gMaps.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                        gMaps.addMarker(markerOptions);
-                    }else {
-                        Toast.makeText(getActivity(), "Please select either Area or Distance so as to proceed", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
         }else {
             Toast.makeText(getActivity(), "You must allow the application to access location for it to run smoothly", Toast.LENGTH_SHORT).show();
             CheckPermissions();
         }
-    }
-
-
-    private void SaveList(ArrayList<LatLng> selected, String type) {
-        String llong= "";
-        for (int i = 0; i < (selected.size()); i++) {
-            Log.e("SaveList", i+" SaveList: "+selected.get(i) );
-            Log.e("SaveList", i+" Type: "+type);
-            llong+=selected.get(i);
-        }
-        Log.e("SaveList", "SaveList String : "+llong);
-
-        Calendar cal= Calendar.getInstance();
-        SimpleDateFormat ctime=new SimpleDateFormat("HH:mm");
-        SimpleDateFormat cdate=new SimpleDateFormat("dd-MMMM-yyyy");
-
-        final String ctim=ctime.format(cal.getTime());
-        final String cdat=cdate.format(cal.getTime());
-
-        String uploadId = "";
-
-        try {
-            uploadId= dref.push().getKey();
-            Mod_Perimeter upload = new Mod_Perimeter(uploadId,cdat+" "+ctim,llong,String.valueOf(selected.size()), store_perimeter );
-             dref.child(type).child(userf.getUid()).child(uploadId).setValue(upload);
-            Toast.makeText(getActivity(), "Length Selection saved", Toast.LENGTH_SHORT).show();
-
-        }catch (Exception s){
-            Toast.makeText(getActivity(), "Unable to save your selection", Toast.LENGTH_LONG).show();
-            Log.e("SaveList", "SaveList Error : "+s.getMessage());
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        MenuInflater menuInflater = getActivity().getMenuInflater();
-        menuInflater.inflate(R.menu.mini, menu);
-        //return true;
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -348,29 +254,12 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
 
         int id = item.getItemId();
         if (id == R.id.action_cancel) {
-            store_area =""; store_perimeter ="";
-            loc_area.clear();
             locList.clear();
             gMaps.clear();
-            clean = false;
-            length_ = 0;
-            txt_peri.setText("Distance Approximation: 0 Km");
             return true;
         }
 
         if (id == R.id.action_save) {
-
-            if (locList.isEmpty() && loc_area.isEmpty()){
-                Log.e("SaveList", "Type: locList.isEmpty() && loc_area.isEmpty()");
-                Toast.makeText(getActivity(), "Ensure you have placed some markers before saving", Toast.LENGTH_SHORT).show();
-            }else {
-                if (locList.size() ==0){
-                    SaveList(loc_area,"Area");
-                }else {
-                    SaveList(locList,"Length");
-                }
-            }
-
             return true;
         }
 
@@ -396,4 +285,12 @@ public class Frag_Length extends Fragment implements OnMapReadyCallback {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        MenuInflater menuInflater = getActivity().getMenuInflater();
+        menuInflater.inflate(R.menu.mini, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
 }

@@ -255,6 +255,7 @@ public class History_Render extends AppCompatActivity implements OnMapReadyCallb
                         try {
                             googleMap.addPolyline((new PolylineOptions()).addAll(locList )
                                     .width(5)
+
                                     .color(Color.RED)
                                     .geodesic(false));
                         }catch (Exception mas){

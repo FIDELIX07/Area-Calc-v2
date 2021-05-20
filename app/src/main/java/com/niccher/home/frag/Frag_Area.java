@@ -374,7 +374,16 @@ public class Frag_Area extends Fragment implements OnMapReadyCallback {
 
         int id = item.getItemId();
         if (id == R.id.action_cancel) {
-            Toast.makeText(getActivity(), "Cancel Under Active Development", Toast.LENGTH_SHORT).show();
+            store_area =""; store_perimeter ="";
+            loc_area.clear();
+            locList.clear();
+            gMaps.clear();
+            clean = false;
+
+            length_ = 0;
+            txt_peri.setText("Perimeter : 0 Km");
+            txt_area.setText("Areas as: 0 Sq, Km");
+
             return true;
         }
 
